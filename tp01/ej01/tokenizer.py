@@ -6,15 +6,32 @@ import os
 import os.path
 import re
 
+config = {
+	"min_word_length": 3,
+	"max_word_length": 40,
+	"token_output_file": "terminos.txt",
+	"stats_output_file": "estadisticas.txt",
+	"candidate_stop_words_output_file": "candidate_stop_words.txt",
+	"show_document_freq": False,
+	"save_candidate_stop_words": True,
+	"candidate_stop_word_ocurrency_ratio": 0.50,
+}
+
+
+tokens_by_file = dict ()
+terms_by_file = dict ()
+
 class Term:
 
 	def __init__ (term, text):
 		term.text = text
 		term.ocurrences = dict ()
 
-	def add_ocurrence (term, filename):
+	def add_ocurrence (term, filename, update_term_counter=False):
 		if (filename not in term.ocurrences):
 			term.ocurrences[filename] = 1
+			if (update_term_counter):
+				stats["term_count"] += 1
 		else:
 			term.ocurrences[filename] += 1
 
@@ -27,29 +44,20 @@ class Term:
 class TermList:
 	def __init__ (termlist):
 		termlist.terms = dict ()
-	def add_term (termlist, token, filename):
+	def add_term (termlist, token, filename, update_term_counter=False):
 		if (token not in termlist.terms):
 			termlist.terms[token] = Term (token)
-		termlist.terms[token].add_ocurrence (filename)
+		termlist.terms[token].add_ocurrence (filename, update_term_counter)
 
-config = {
-	"min_word_length": 3,
-	"max_word_length": 40,
-	"token_output_file": "terminos.txt",
-	"candidate_stop_words_output_file": "candidate_stop_words.txt",
-	"show_document_freq": False,
-	"save_candidate_stop_words": True,
-	"candidate_stop_word_ocurrency_ratio": 0.50,
-}
 
 stats = {
 	"document_count": 0,
 	"token_count": 0,
-	"word_count": 0,
-	"min_document_length": None,
-	"max_document_length": None,
-	"min_token_per_document": None,
-	"max_token_per_document": None
+	"term_count": 0,
+	"term_character_count": 0,
+	"avg_tokens_by_document": None,
+	"avg_terms_by_document": None,
+	"avg_term_length": None
 }
 
 
@@ -67,12 +75,17 @@ def main ():
 	term_list = generate_term_list (sys.argv[1], stop_words)
 	generate_terminos_txt (term_list)
 	process_candidate_stop_words (term_list, stats)
+	calculate_stats (stats, sys.argv[1])
 	print_stats (stats)
 	sys.exit (0)
 
 def generate_term_list (dirname, stop_words):
 	term_list = TermList ()
 	for filename in os.listdir (dirname):
+		global terms_by_file
+		global tokens_by_file
+		tokens_by_file[filename] = set ()
+		terms_by_file[filename] = set ()
 		file = open (os.path.join (dirname, filename), "r")
 		for line in file:
 			line_tokens = tokenizar (line)
@@ -80,12 +93,15 @@ def generate_term_list (dirname, stop_words):
 				line_tokens = sacar_palabras_vacias (line_tokens, stop_words)
 			if (line_tokens is not None):
 				for token in line_tokens:
-					term_list.add_term (token, filename)
+					term_list.add_term (token, filename, update_term_counter=True)
+					tokens_by_file[filename].add (token)
+					terms_by_file[filename].add (token) #Este se va a remover si es palabra vacia
+					stats["term_character_count"] += len (token)
 		file.close ()
+		if (stop_words != None):
+			terms_by_file = sacar_palabras_vacias (terms_by_file, stop_words)
 		stats["document_count"] += 1
 	return term_list
-
-	
 
 def tokenizar (text):
 	tokens = list ()
@@ -95,6 +111,7 @@ def tokenizar (text):
 			if ((len (token) >= config["min_word_length"]) and (len (token) <= config["max_word_length"])):
 				tokens.append (token)
 				stats["token_count"] += 1
+				stats["term_character_count"] += len(token)
 	return tokens
 
 def normalize_token (text):
@@ -134,9 +151,49 @@ def file_get_words (filename):
 			words.append (word)
 	return words
 
+def calculate_stats (stats, dirname):
+	shortest = get_shortest_file (dirname)
+	longest = get_longest_file (dirname)
+
+	global terms_by_file
+	global tokens_by_file
+	stats["avg_tokens_by_document"] = (stats ["token_count"] / stats["document_count"])
+	stats["avg_terms_by_document"] = (stats ["term_count"] / stats["document_count"])
+	stats["avg_term_length"] = (stats["term_character_count"] / stats ["term_count"])
+	stats["shortest_document_token_count"] = len (tokens_by_file[shortest])
+	stats["shortest_document_term_count"] = len (terms_by_file[shortest])
+	stats["longest_document_token_count"] = len (tokens_by_file[longest])
+	stats["longest_document_term_count"] = len (terms_by_file[longest])
+
+def get_shortest_file (dirname):
+	shortest = None
+	for filename in os.listdir (dirname):
+		path = os.path.join (dirname, filename)
+		if (os.path.isfile (path)) and ((shortest is None) or (os.path.getsize (path) < shortest)):
+			shortest = filename
+	return shortest
+
+def get_longest_file (dirname):
+	longest = None
+	for filename in os.listdir (dirname):
+		path = os.path.join (dirname, filename)
+		if (os.path.isfile (path)) and ((longest is None) or (os.path.getsize (path) > longest)):
+			longest = filename
+	return longest
+
 def print_stats (stats):
-	print "Se han procesado %i documentos" %(stats ["document_count"])
-	print "Se han procesado %i tokens" %(stats ["token_count"])
+	file = open (config["stats_output_file"], "w")
+	file.write ("Documentos procesados: %i%s" %(stats ["document_count"], os.linesep))
+	file.write ("Tokens procesados: %i%s" %(stats ["token_count"], os.linesep))
+	file.write ("Terminos procesados: %i%s" %(stats ["term_count"], os.linesep))
+	file.write ("Promedio de tokens por documento: %d%s" %(stats["avg_tokens_by_document"], os.linesep))
+	file.write ("Promedio de terminos por documento: %d%s" %(stats["avg_terms_by_document"], os.linesep))
+	file.write ("Largo promedio de un termino: %d caracteres%s" %(stats["avg_term_length"], os.linesep))
+	file.write ("Cantidad de tokens en documento mas corto: %d%s" %(stats["shortest_document_token_count"], os.linesep))
+	file.write ("Cantidad de terminos en documento mas corto: %d%s" %(stats["shortest_document_term_count"], os.linesep))
+	file.write ("Cantidad de tokens en documento mas largo: %d%s" %(stats["longest_document_token_count"], os.linesep))
+	file.write ("Cantidad de terminos en documento mas largo: %d%s" %(stats["longest_document_term_count"], os.linesep))
+	file.close ()
 
 def generate_terminos_txt (term_list):
 	filename = config["token_output_file"]
@@ -153,7 +210,7 @@ def print_term_list (termlist, out_filename):
 	for token in sorted_terms:
 		term = termlist.terms[token]
 		total = term.count_ocurrences ()
-		file.write ("%s (%i apariciones)%s" %(token, total, os.linesep))
+		file.write ("%s CF:%i, DF: %i%s" %(token, total, len(term.ocurrences), os.linesep))
 		if (config["show_document_freq"]):
 			for in_filename in sorted (term.ocurrences, reverse=True, key=lambda k: term.ocurrences[k]):
 				file.write ("\t%i %s%s" %(term.ocurrences[in_filename], in_filename, os.linesep))
