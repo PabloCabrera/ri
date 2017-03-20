@@ -1,7 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import sys
 import os
 import os.path
-from collections import OrderedDict
+import re
 
 class Term:
 
@@ -32,6 +35,11 @@ class TermList:
 config = {
 	"min_word_length": 3,
 	"max_word_length": 40,
+	"token_output_file": "terminos.txt",
+	"candidate_stop_words_output_file": "candidate_stop_words.txt",
+	"show_document_freq": False,
+	"save_candidate_stop_words": True,
+	"candidate_stop_word_ocurrency_ratio": 0.50,
 }
 
 stats = {
@@ -43,6 +51,7 @@ stats = {
 	"min_token_per_document": None,
 	"max_token_per_document": None
 }
+
 
 def main ():
 
@@ -57,6 +66,7 @@ def main ():
 
 	term_list = generate_term_list (sys.argv[1], stop_words)
 	generate_terminos_txt (term_list)
+	process_candidate_stop_words (term_list, stats)
 	print_stats (stats)
 	sys.exit (0)
 
@@ -80,17 +90,41 @@ def generate_term_list (dirname, stop_words):
 def tokenizar (text):
 	tokens = list ()
 	for token in text.strip().split(" "):
-		if ((len (token) >= config["min_word_length"]) and (len (token) <= config["max_word_length"])):
-			tokens.append (token)
-			stats["token_count"] += 1
+		normalized_tokens = normalize_token (token)
+		for token in normalized_tokens.strip().split(" "):
+			if ((len (token) >= config["min_word_length"]) and (len (token) <= config["max_word_length"])):
+				tokens.append (token)
+				stats["token_count"] += 1
 	return tokens
 
+def normalize_token (text):
+	regex="[!\"$%&/()=?\\|@#\[\]{}.:,;]+"
+	if (re.search (regex, text) is not None):
+		token = re.sub (regex, " ", text)
+	else:
+		token = text
+	#token = replace_weird_characters (text)
+	return token.lower()
+
+def replace_weird_characters (text):
+	tabin = u'áéíóú'
+	tabout = u'aeiou'
+	token = translate (text, tabin, tabout)
+	return token
+
+def translate (to_translate, tabin, tabout):
+	to_translate = to_translate.decode('utf-8')
+	tabin = [ord(char) for char in tabin]
+	translate_table = dict(zip(tabin, tabout))
+	return to_translate.translate(translate_table).encode('utf-8')
+
 def sacar_palabras_vacias (tokens, stop_words):
+	new_list = list (tokens)
 	for word in stop_words:
-		num_matches = tokens.count (word)
+		num_matches = new_list.count (word)
 		for x in range (0, num_matches):
-			tokens.remove (word)
-	return tokens.difference (stop_words)
+			new_list.remove (word)
+	return new_list
 
 def file_get_words (filename):
 	words = list()
@@ -105,7 +139,7 @@ def print_stats (stats):
 	print "Se han procesado %i tokens" %(stats ["token_count"])
 
 def generate_terminos_txt (term_list):
-	filename = "terminos.txt"
+	filename = config["token_output_file"]
 	truncate_file (filename)
 	print_term_list (term_list, filename)	
 
@@ -119,10 +153,26 @@ def print_term_list (termlist, out_filename):
 	for token in sorted_terms:
 		term = termlist.terms[token]
 		total = term.count_ocurrences ()
-		file.write ("%i %s%s" %(total, token, os.linesep))
-		for in_filename in sorted (term.ocurrences, reverse=True, key=lambda k: term.ocurrences[k]):
-			file.write ("\t%i %s%s" %(term.ocurrences[in_filename], in_filename, os.linesep))
+		file.write ("%s (%i apariciones)%s" %(token, total, os.linesep))
+		if (config["show_document_freq"]):
+			for in_filename in sorted (term.ocurrences, reverse=True, key=lambda k: term.ocurrences[k]):
+				file.write ("\t%i %s%s" %(term.ocurrences[in_filename], in_filename, os.linesep))
 	file.close ()
+
+def process_candidate_stop_words (termlist, stats):
+	if (config["save_candidate_stop_words"]):
+		min_document_match = config["candidate_stop_word_ocurrency_ratio"] * stats["document_count"]
+		output_filename = config["candidate_stop_words_output_file"]
+		save_candidate_stop_words (termlist, min_document_match, output_filename)
+
+def save_candidate_stop_words (termlist, min_document_match, filename):
+	file = open (filename, "w")
+	for key in termlist.terms:
+		term = termlist.terms[key]
+		count_document_match = len (term.ocurrences)
+		if (count_document_match >= min_document_match):
+			file.write ("%s%s" %(term.text, os.linesep))
+	file.close()
 
 if __name__ == "__main__":
 	main ()
