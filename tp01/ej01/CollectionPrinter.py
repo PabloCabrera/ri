@@ -21,7 +21,7 @@ class CollectionPrinter:
 		file.write ("Terminos extraidos: %i%s" %(collection.get_term_count(), os.linesep))
 		file.write ("Promedio de tokens en documento: %d%s" %(collection.get_avg_tokens_per_document(), os.linesep))
 		file.write ("Promedio de terminos en documento: %d%s" %(collection.get_avg_terms_per_document(), os.linesep))
-		file.write ("Largo promedio de termino: %d%s" %(collection.get_avg_term_length(), os.linesep))
+		file.write ("Largo promedio de termino: %d.2 caracteres%s" %(collection.get_avg_term_length(), os.linesep))
 		file.write ("Documento mas corto:%s" %(os.linesep))
 		file.write ("\tTokens extraidos: %i%s" %(shortest.get_token_count(), os.linesep))
 		file.write ("\tTerminos extraidos: %i%s" %(shortest.get_term_count(), os.linesep))

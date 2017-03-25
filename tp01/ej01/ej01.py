@@ -41,12 +41,15 @@ class Ej01:
 				words.append (word)
 		return words
 
-	def add_documentdir_collection (ej01, dirname, collection, stop_words):
+	def add_documentdir_collection (ej01, dirname, collection, stop_words=None):
 		for filename in os.listdir (dirname):
 			file = open (os.path.join (dirname, filename), "r")
 			for line in file:
 				tokens = tokenizar (line)
-				terms = sacar_palabras_vacias (tokens, stop_words)
+				if (stop_words is None):
+					terms = list (tokens)
+				else:
+					terms = sacar_palabras_vacias (tokens, stop_words)
 
 				collection.add_token_list (tokens, filename)
 				collection.add_term_list (terms, filename)
@@ -69,10 +72,9 @@ def tokenizar (text):
 
 def sacar_palabras_vacias (tokens, stop_words):
 	new_list = list (tokens)
-	for word in stop_words:
-		num_matches = new_list.count (word)
-		for x in range (0, num_matches):
-			new_list.remove (word)
+	for token in tokens:
+		if token in stop_words:
+			new_list.remove (token)
 	return new_list
 
 def normalize_token (text):
