@@ -5,12 +5,12 @@ import sys
 import os
 import os.path
 import re
+from ConfigParser import ConfigParser
 from Collection import *
 from Document import *
 from TokenInCollection import *
 from TokenInDocument import *
 from CollectionPrinter import *
-from config import config
 
 class Ej01:
 	def __init__ (ej01, args):
@@ -20,6 +20,7 @@ class Ej01:
 
 		input_dir = args[1]
 		stop_words = ej01.get_stop_words (args)
+		ej01.load_config_file ("config.ini")
 
 		collection = Collection ()
 		ej01.add_documentdir_collection (input_dir, collection, stop_words)
@@ -41,15 +42,21 @@ class Ej01:
 				words.append (word)
 		return words
 
+	def load_config_file (ej01, filename):
+		global CONFIG
+		CONFIG = ConfigParser ()
+		CONFIG.read (filename)
+
 	def add_documentdir_collection (ej01, dirname, collection, stop_words=None):
 		for filename in os.listdir (dirname):
 			file = open (os.path.join (dirname, filename), "r")
 			for line in file:
 				tokens = tokenizar (line)
-				if (stop_words is None):
-					terms = list (tokens)
-				else:
-					terms = sacar_palabras_vacias (tokens, stop_words)
+				terms = list (tokens)
+
+				if (stop_words is not None):
+					terms = sacar_palabras_vacias (terms, stop_words)
+				terms = sacar_palabras_largo_invalido (terms)
 
 				collection.add_token_list (tokens, filename)
 				collection.add_term_list (terms, filename)
@@ -66,16 +73,27 @@ def tokenizar (text):
 	for token in text.strip().split(" "):
 		normalized_tokens = normalize_token (token)
 		for token in normalized_tokens.strip().split(" "):
-			if ((len (token) >= config["min_word_length"]) and (len (token) <= config["max_word_length"])):
-				tokens.append (token)
+			tokens.append (token)
 	return tokens
 
 def sacar_palabras_vacias (tokens, stop_words):
-	new_list = list (tokens)
-	for token in tokens:
+	# Es necesario hacer una copia para no eliminar elementos de la lista sobre la que estamos iterando
+	copy_tokens = list (tokens)
+	for token in copy_tokens:
 		if token in stop_words:
-			new_list.remove (token)
-	return new_list
+			tokens.remove (token)
+	return tokens
+
+def sacar_palabras_largo_invalido (tokens):
+	global CONFIG
+	min_len = int (CONFIG.get("Tokenizer", "min_word_length"))
+	max_len = int (CONFIG.get("Tokenizer", "max_word_length"))
+
+	copy_tokens = list (tokens)
+	for token in copy_tokens:
+		if ((len (token) < min_len) or (len (token) > max_len)):
+			tokens.remove (token)
+	return tokens
 
 def normalize_token (text):
 	token = replace_weird_characters (text.lower())
@@ -94,7 +112,6 @@ def translate (to_translate, tabin, tabout):
 	tabin = [ord(char) for char in tabin]
 	translate_table = dict(zip(tabin, tabout))
 	return to_translate.translate(translate_table).encode('utf-8')
-
 
 if __name__ == "__main__":
 	Ej01 (sys.argv)
