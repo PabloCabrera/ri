@@ -31,6 +31,7 @@ alli
 ambos
 ante
 antes
+aproximadamente
 aquel
 aquella
 aquello
@@ -51,6 +52,7 @@ bien
 cabe
 cada
 casi
+cerca
 cierto
 cierta
 ciertos
@@ -88,8 +90,10 @@ demasiadas
 demasiados
 dentro
 desde
+despues
 donde
 dos
+durante
 el
 él
 ella
@@ -140,6 +144,7 @@ fueron
 fui
 fuimos
 gueno
+gran
 ha
 hace
 haces
@@ -150,7 +155,10 @@ hacen
 hacer
 hacia
 hago
+han
 hasta
+hay
+hayan
 incluso
 intenta
 intentas
@@ -172,6 +180,7 @@ lo
 las
 los
 largo
+lejos
 más
 mas
 me
@@ -282,6 +291,7 @@ segun
 ser
 si
 sí
+sido
 siempre
 siendo
 sin
@@ -293,12 +303,15 @@ solamente
 solo
 sólo
 somos
+son
 soy
 sr
 sra
 sres
 sta
 su
+suele
+suelen
 sus
 suya
 suyas
@@ -362,6 +375,11 @@ usar
 uso
 usted
 ustedes
+utiliza
+utilizo
+utilizamos
+utlilizan
+utilizar
 va
 van
 vais
@@ -370,6 +388,7 @@ vamos
 varias
 varios
 vaya
+veces
 verdadera
 vosotras
 vosotros
@@ -417,4 +436,7 @@ void
 while
 with
 yield
+###___ENGLISH_STOP_WORDS:
+the
+and
 

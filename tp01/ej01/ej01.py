@@ -78,18 +78,15 @@ def sacar_palabras_vacias (tokens, stop_words):
 	return new_list
 
 def normalize_token (text):
-	regex="[!\"$%&/()=?\\|@#\[\]{}.:,;]+"
-	if (re.search (regex, text) is not None):
-		token = re.sub (regex, " ", text)
-	else:
-		token = text
-	#token = replace_weird_characters (text)
-	return token.lower()
+	token = replace_weird_characters (text.lower())
+	return token
 
 def replace_weird_characters (text):
-	tabin = u'áéíóú'
-	tabout = u'aeiou'
+	tabin = u'áéíóúÅÉÍÓÚñ'
+	tabout = u'aeiouaeioun'
 	token = translate (text, tabin, tabout)
+	token = re.sub ("[^0-9a-z]+", "", token)
+	token = re.sub ("^[0-9]+$", "", token) # quitamos numeros si estan solos
 	return token
 
 def translate (to_translate, tabin, tabout):
