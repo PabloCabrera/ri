@@ -1,11 +1,12 @@
 import os
+import io
 
 class CollectionPrinter:
 	def __init__ (printer, collection):
 		printer.collection = collection
 
 	def print_terms (printer, output_filename):
-		file = open (output_filename, "w")
+		file = io.open (output_filename, mode="w", encoding="UTF-8")
 		terms = printer.collection.get_terms_sorted_by_freq ()
 		for term in terms:
 			file.write ("%s  CF:%i  DF:%i%s" % (term.name, term.cf, term.df, os.linesep))
