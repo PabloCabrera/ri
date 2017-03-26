@@ -5,6 +5,7 @@ import sys
 import os
 import os.path
 import re
+import io
 from ConfigParser import ConfigParser
 from Collection import *
 from Document import *
@@ -36,7 +37,7 @@ class Ej01:
 
 	def file_get_words (ej01, filename):
 		words = list()
-		file = open (filename, "r")
+		file = io.open (filename, mode="r", encoding="UTF-8")
 		for line in file:
 			for word in line.strip().split(" "):
 				words.append (word)
@@ -49,24 +50,28 @@ class Ej01:
 
 	def add_documentdir_collection (ej01, dirname, collection, stop_words=None):
 		for filename in os.listdir (dirname):
-			file = open (os.path.join (dirname, filename), "r")
-			for line in file:
-				tokens = tokenizar (line)
-				terms = list (tokens)
+			file = io.open (os.path.join (dirname, filename), mode="r", encoding="UTF-8")
+			try:
+				for line in file:
+					tokens = tokenizar (line)
+					terms = list (tokens)
 
-				if (stop_words is not None):
-					terms = sacar_palabras_vacias (terms, stop_words)
-				terms = sacar_palabras_largo_invalido (terms)
+					if (stop_words is not None):
+						terms = sacar_palabras_vacias (terms, stop_words)
+					terms = sacar_palabras_largo_invalido (terms)
 
-				collection.add_token_list (tokens, filename)
-				collection.add_term_list (terms, filename)
+					collection.add_token_list (tokens, filename)
+					collection.add_term_list (terms, filename)
+			except UnicodeDecodeError:
+				print "WARNING: %s no utiliza codificacion UTF-8. Se aborta el procesamiento de dicho documento." % filename
 			file.close ()
 
 	def print_collection (ej01, collection):
+		global CONFIG
 		printer = CollectionPrinter (collection)
-		printer.print_terms ("terminos.txt")
-		printer.print_statistics ("estadisticas.txt")
-		printer.print_top_ten ("top_ten.txt")
+		printer.print_terms (CONFIG.get ("Paths", "terms_file"))
+		printer.print_statistics (CONFIG.get ("Paths", "statistics_file"))
+		printer.print_top_ten (CONFIG.get ("Paths", "top_file"))
 
 def tokenizar (text):
 	tokens = list ()
@@ -108,10 +113,9 @@ def replace_weird_characters (text):
 	return token
 
 def translate (to_translate, tabin, tabout):
-	to_translate = to_translate.decode('utf-8')
 	tabin = [ord(char) for char in tabin]
 	translate_table = dict(zip(tabin, tabout))
-	return to_translate.translate(translate_table).encode('utf-8')
+	return to_translate.translate(translate_table)
 
 if __name__ == "__main__":
 	Ej01 (sys.argv)
