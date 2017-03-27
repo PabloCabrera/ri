@@ -37,7 +37,7 @@ class Tokenizer:
 		return tokens
 
 	def normalize_token (tokenizer, text):
-		text = re.sub (u"[^0-9a-záéíóúÅÉÍÓÚñ]+", "", text)
+		text = re.sub (u"[^0-9a-zA-ZáéíóúÅÉÍÓÚñ]+", "", text)
 		text = re.sub ("^[0-9]+$", "", text) # quitamos numeros si estan solos
 		if tokenizer.config.getboolean("Tokenizer", "replace_weird_characters"):
 			token = tokenizer.replace_weird_characters (text.lower())
