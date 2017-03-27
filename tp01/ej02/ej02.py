@@ -16,7 +16,7 @@ from CollectionPrinter import *
 class Ej02:
 	def __init__ (ej02, args):
 		if (len (args) < 2):
-			print "Uso: python tokenizar.py <directorio-corpus> [archivo-palabras-vacias]"
+			print "Uso: python ej02.py <directorio-corpus> [archivo-palabras-vacias]"
 			sys.exit (1)
 
 		input_dir = args[1]
