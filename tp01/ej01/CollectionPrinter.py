@@ -35,12 +35,12 @@ class CollectionPrinter:
 	def print_top_ten (printer, output_filename):
 		most_frequent_terms = printer.collection.get_top_freq_terms (10)
 		less_frequent_terms = printer.collection.get_bottom_freq_terms (10)
-		file = open (output_filename, "w")
-		file.write ("Terminos mas frecuentes:%s" % (os.linesep))
+		file = io.open (output_filename, mode="w", encoding="UTF-8")
+		file.write (u"Terminos mas frecuentes:%s" % (os.linesep))
 		for term in most_frequent_terms:
-			file.write ("\t%s  CF=%i%s" % (term.name, term.cf, os.linesep))
-		file.write ("Terminos menos frecuentes:%s" % (os.linesep))
+			file.write (u"\t%s  CF=%i%s" % (term.name, term.cf, os.linesep))
+		file.write (u"Terminos menos frecuentes:%s" % (os.linesep))
 		for term in less_frequent_terms:
-			file.write ("\t%s  CF=%i%s" % (term.name, term.cf, os.linesep))
+			file.write (u"\t%s  CF=%i%s" % (term.name, term.cf, os.linesep))
 		file.close ()
 		

@@ -37,15 +37,18 @@ class Tokenizer:
 		return tokens
 
 	def normalize_token (tokenizer, text):
-		token = tokenizer.replace_weird_characters (text.lower())
+		text = re.sub (u"[^0-9a-záéíóúÅÉÍÓÚñ]+", "", text)
+		text = re.sub ("^[0-9]+$", "", text) # quitamos numeros si estan solos
+		if tokenizer.config.getboolean("Tokenizer", "replace_weird_characters"):
+			token = tokenizer.replace_weird_characters (text.lower())
+		else:
+			token = text.lower()
 		return token
 
 	def replace_weird_characters (tokenizer, text):
 		tabin = u'áéíóúÅÉÍÓÚñ'
 		tabout = u'aeiouaeioun'
 		token = tokenizer.translate (text, tabin, tabout)
-		token = re.sub ("[^0-9a-z]+", "", token)
-		token = re.sub ("^[0-9]+$", "", token) # quitamos numeros si estan solos
 		return token
 
 	def translate (tokenizer, to_translate, tabin, tabout):
