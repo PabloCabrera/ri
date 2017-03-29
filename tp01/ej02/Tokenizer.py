@@ -8,7 +8,11 @@ from ConfigParser import ConfigParser
 class Tokenizer:
 	def __init__ (tokenizer, config):
 		tokenizer.config = config
-		tokenizer.load_entities_file ("entities.json")
+		try:
+			entities_file = config.get ("Tokenizer", "entities_file")
+			tokenizer.load_entities_file (entities_file)
+		except Exception:
+			tokenizer.entity_desc = dict ()
 
 	def tokenize (tokenizer, text):
 		tokens = list ()
