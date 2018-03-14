@@ -52,19 +52,23 @@ class Ej01:
 		for filename in os.listdir (dirname):
 			file = io.open (os.path.join (dirname, filename), mode="r", encoding="UTF-8")
 			try:
-				for line in file:
-					tokens = tokenizar (line)
-					terms = list (tokens)
-
-					if (stop_words is not None):
-						terms = sacar_palabras_vacias (terms, stop_words)
-					terms = sacar_palabras_largo_invalido (terms)
-
-					collection.add_token_list (tokens, filename)
-					collection.add_term_list (terms, filename)
+				ej01.add_file_collection (file, collection, stop_words, filename)
 			except UnicodeDecodeError:
-				print "WARNING: %s no utiliza codificacion UTF-8. Se aborta el procesamiento de dicho documento." % filename
-			file.close ()
+				file.close ()
+				file = io.open (os.path.join (dirname, filename), mode="r", encoding="ISO-8859-1")
+				ej01.add_file_collection (file, collection, stop_words, filename)
+
+	def add_file_collection (ej01, file, collection, stop_words, filename):
+		for line in file:
+			tokens = tokenizar (line)
+			terms = list (tokens)
+
+			if (stop_words is not None):
+				terms = sacar_palabras_vacias (terms, stop_words)
+			terms = sacar_palabras_largo_invalido (terms)
+
+			collection.add_token_list (tokens, filename)
+			collection.add_term_list (terms, filename)
 
 	def print_collection (ej01, collection):
 		global CONFIG

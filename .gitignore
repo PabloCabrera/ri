@@ -1,0 +1,8 @@
+*.pyc
+corpus_*
+*.swp
+*.swo
+estadisticas.txt
+terminos.txt
+top_ten.txt
+RI-tknz-*.tar.gz
