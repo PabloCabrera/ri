@@ -8,8 +8,6 @@ import io
 import fileinput
 from ConfigParser import ConfigParser
 from Tokenizer import *
-from TokenInCollection import *
-from TokenInDocument import *
 from Stemmer import *
 from InvertedIndex import *
 
