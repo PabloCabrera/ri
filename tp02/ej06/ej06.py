@@ -10,8 +10,6 @@ from ConfigParser import ConfigParser
 from Tokenizer import *
 from Collection import *
 from Document import *
-from TokenInCollection import *
-from TokenInDocument import *
 from Stemmer import *
 
 class Ej06:
