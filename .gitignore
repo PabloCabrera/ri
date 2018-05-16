@@ -6,6 +6,9 @@
 estadisticas.txt
 terminos.txt
 top_ten.txt
+documents.txt
+lexicon.txt
+index.bin
 terrier-4.0
 entregas/
 corpus
