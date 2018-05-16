@@ -1,0 +1,18 @@
+NOTAS TERRIER:
+
+Agregar archivos TREC al corpus:	
+./bin/trec_setup.sh /home/pablo/Descargas/terrier-4.0/corpus/
+
+Generar indice:
+./bin/trec_terrier.sh -i
+
+Buscar queries desde archivo topics:
+./bin/trec_terrier.sh -r -Dtrec.topics=/home/pablo/Descargas/terrier-4.0/topics/topics.txt -Dignore.low.idf.terms=false -Dtrec.model=BM25
+
+archivo qrels:
+id_query <cualquier_cosa> id_doc es_relevante?
+Ejemplo: 12 0 3 1
+
+Evaluación:
+./bin/trec_terrier.sh -e -Dtrec.qrels=/home/Descargas/terrier-4.0/qrels/qrels.txt
+La salida se guarda en el directorio ./var

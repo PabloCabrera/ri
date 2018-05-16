@@ -1,8 +1,12 @@
 *.pyc
-corpus_*
 *.swp
 *.swo
+*.pdf
+*.tar.gz
 estadisticas.txt
 terminos.txt
 top_ten.txt
-RI-tknz-*.tar.gz
+terrier-4.0
+tp01/ej05/img/
+entregas/
+corpus
