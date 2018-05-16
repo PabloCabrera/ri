@@ -141,5 +141,9 @@ class SearchEngine:
 			print "Respuesta obtenida en %f segundos" % elapsed
 
 if __name__ == "__main__":
-	SearchEngine (sys.argv[1], sys.argv[2], sys.argv[3])
+	if len (sys.argv) == 4:
+		SearchEngine (sys.argv[1], sys.argv[2], sys.argv[3])
+	else:
+		print "Uso: python SearchEngine.py <archivo-lexicon> <archivo-documentos> <archivo-posting-lists>"
+		sys.exit (1)
 
