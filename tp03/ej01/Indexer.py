@@ -8,7 +8,6 @@ import io
 import fileinput
 from ConfigParser import ConfigParser
 from Tokenizer import *
-from Stemmer import *
 from InvertedIndex import *
 
 class Indexer:
@@ -21,7 +20,6 @@ class Indexer:
 		stop_words = self.get_stop_words (args)
 		self.config = self.load_config_file ("config.ini")
 		self.tokenizer = Tokenizer (self.config)
-		self.stemmer = Stemmer (self.config)
 		self.documents = dict ()
 		self.invertedIndex = InvertedIndex ()
 
@@ -62,23 +60,20 @@ class Indexer:
 			self.documents[filename] = document
 			file = io.open (os.path.join (dirname, filename), mode="r", encoding="UTF-8")
 			for line in file:
-				self.add_line_terms_to_index (line, stop_words, document)
+				self.add_line_terms_to_index (line, stop_words, doc_id)
 			file.close ()
 			procesados +=1
 			print "Documentos procesados: %d" % procesados
 
-	def add_line_terms_to_index (self, line, stop_words, document):
+	def add_line_terms_to_index (self, line, stop_words, doc_id):
 		try:
 			terms = self.tokenizer.tokenize (line)
 
 			if (stop_words is not None):
 				terms = self.tokenizer.remove_stop_words (terms, stop_words)
-				terms = self.tokenizer.remove_invalid_length_words (terms)
 
-			stemmed_terms = self.stemmer.stem (terms)
-
-			for term in stemmed_terms:
-				self.invertedIndex.add (term, document)
+			for term in terms:
+				self.invertedIndex.add (term, doc_id)
 
 		except UnicodeDecodeError:
 			print "WARNING: %s no utiliza codificacion UTF-8." % filename

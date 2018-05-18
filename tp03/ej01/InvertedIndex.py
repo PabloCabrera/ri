@@ -7,12 +7,12 @@ class InvertedIndex:
 	def __init__ (self):
 		self.index = dict ()
 	
-	def add (self, term, document):
+	def add (self, term, doc_id):
 		if (term in self.index):
-			if document not in self.index[term]:
-				self.index[term].append (document)
+			if doc_id not in self.index[term]:
+				self.index[term].append (doc_id)
 		else:
-			self.index[term] = [document]
+			self.index[term] = [doc_id]
 
 	def get (self, term):
 		if (term in self.index):
@@ -30,8 +30,8 @@ class InvertedIndex:
 		for term in self.index:
 			bin_data = ""
 			df = len (self.index [term])
-			for document in self.index [term]:
-				bin_data += struct.pack ("I", document["doc_id"])
+			for doc_id in self.index [term]:
+				bin_data += struct.pack ("I", doc_id)
 			filestore.write ("%s" % bin_data)
 			lexicon[term] = {"term": term, "df": df, "position": sum_df}
 			sum_df += df

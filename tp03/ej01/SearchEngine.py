@@ -3,7 +3,6 @@
 import sys
 import struct
 import time
-from Stemmer import *
 from Tokenizer import *
 from ConfigParser import *
 
@@ -12,7 +11,6 @@ class SearchEngine:
 	def __init__ (engine, lexicon_file,  documents_file, index_file):
 		engine.config = engine.load_config_file ("config.ini")
 		engine.tokenizer = Tokenizer (engine.config)
-		engine.stemmer = Stemmer (engine.config)
 		engine.index = open (index_file, "r")
 		print "Cargando archivo documentos ..."
 		engine.load_documents (documents_file)
@@ -59,9 +57,8 @@ class SearchEngine:
 				exit = True
 			else:
 				terms = engine.tokenizer.tokenize (line)
-				stemmed_terms = engine.stemmer.stem (terms)
 				started_at = time.time()
-				results = engine.search (stemmed_terms)
+				results = engine.search (terms)
 				ended_at = time.time()
 				engine.print_results (results, ended_at - started_at)
  
