@@ -19,7 +19,8 @@ class Tokenizer:
 		for token in text.strip().split(" "):
 			normalized_tokens = tokenizer.normalize_token (token)
 			for token in normalized_tokens.strip().split(" "):
-				tokens.append (token)
+				if len (token) > 0:
+					tokens.append (token)
 		return tokens
 
 	def remove_stop_words (tokenizer, tokens, stop_words):
