@@ -9,6 +9,7 @@ import fileinput
 from ConfigParser import ConfigParser
 from Tokenizer import *
 from InvertedIndex import *
+from IndexJoiner import *
 
 class Indexer:
 	def __init__ (self, args):
@@ -21,12 +22,14 @@ class Indexer:
 		self.config = self.load_config_file ("config.ini")
 		self.tokenizer = Tokenizer (self.config)
 		self.documents = dict ()
+		self.partial_indexes = []
+		self.partial_lexicons = []
 		self.invertedIndex = InvertedIndex ()
 
 		print "Generando índice de búsqueda ..."
 		self.add_documentdir (input_dir, stop_words)
-		print "Escribiendo archivo de índice..."
-		self.lexicon = self.write_index_file ("index.bin")
+		print "Uniendo archivos de índice..."
+		self.lexicon = self.join_indexes("index.bin")
 		self.write_lexicon ("lexicon.txt")
 		self.write_documents_index ("documents.txt")
 
@@ -64,13 +67,18 @@ class Indexer:
 			file.close ()
 			procesados +=1
 			print "Documentos procesados: %d" % procesados
+		self.partial_dump ()
 
 	def add_line_terms_to_index (self, line, stop_words, doc_id):
+		limit = int(self.config.get("Indexer", "partial_dump_size")) * 256 # 4 Bytes * 256 = 1 KiB
 		try:
 			terms = self.tokenizer.tokenize (line)
 
 			if (stop_words is not None):
 				terms = self.tokenizer.remove_stop_words (terms, stop_words)
+
+			if (self.invertedIndex.size + len(terms) > limit):
+				self.partial_dump ()
 
 			for term in terms:
 				self.invertedIndex.add (term, doc_id)
@@ -78,8 +86,17 @@ class Indexer:
 		except UnicodeDecodeError:
 			print "WARNING: %s no utiliza codificacion UTF-8." % filename
 
-	def write_index_file (self, filename):
+	def partial_dump (self):
+		filename = "partial_dump.%d" % len (self.partial_lexicons)
+		print "Volcado parcial de posting list (%s)" % filename
 		lexicon = self.invertedIndex.store (filename)
+		self.partial_indexes.append (filename)
+		self.partial_lexicons.append (lexicon)
+		self.invertedIndex = InvertedIndex ()
+
+	def join_indexes (self, filename):
+		joiner = IndexJoiner ()
+		lexicon = joiner.join (self.partial_indexes, self.partial_lexicons, filename)
 		return lexicon
 
 	def write_lexicon (self, filename):

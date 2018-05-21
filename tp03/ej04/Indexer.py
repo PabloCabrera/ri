@@ -14,7 +14,7 @@ from InvertedIndex import *
 class Indexer:
 	def __init__ (self, args):
 		if (len (args) < 2):
-			print "Uso: python self.py <directorio-corpus> [archivo-palabras-vacias]"
+			print "Uso: python self.py <directorio-corpus>"
 			sys.exit (1)
 
 		input_dir = args[1]
