@@ -1,0 +1,3 @@
+./bin/trec_terrier.sh -r -Dtrec.model=BM25 -Dtrec.topics=QUERIES.TREC
+./bin/trec_terrier.sh -r -Dtrec.model=TF_IDF -Dtrec.topics=QUERIES.TREC
+./bin/trec_terrier.sh -e -Dtrec.qrels=CISI.REL2

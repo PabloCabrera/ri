@@ -1,0 +1,134 @@
+Query 1
+Modelo Booleano AND:
+No hay resultados
+Modelo Booleano OR:
+	[1] Doc 36  (1.0000)
+	[2] Doc 17  (1.0000)
+	[3] Doc 5  (1.0000)
+	[4] Doc 15  (1.0000)
+	[5] Doc 25  (1.0000)
+	[6] Doc 29  (1.0000)
+	[7] Doc 32  (1.0000)
+Modelo Vectorial:
+	[1] Doc 25  (0.1925)
+	[2] Doc 29  (0.1667)
+	[3] Doc 32  (0.1543)
+	[4] Doc 15  (0.1400)
+	[5] Doc 36  (0.1325)
+	[6] Doc 5  (0.1325)
+	[7] Doc 17  (0.1231)
+
+Query 2
+Modelo Booleano AND:
+No hay resultados
+Modelo Booleano OR:
+	[1] Doc 1  (1.0000)
+	[2] Doc 4  (1.0000)
+	[3] Doc 6  (1.0000)
+	[4] Doc 9  (1.0000)
+	[5] Doc 19  (1.0000)
+	[6] Doc 21  (1.0000)
+	[7] Doc 29  (1.0000)
+	[8] Doc 37  (1.0000)
+	[9] Doc 38  (1.0000)
+	[10] Doc 14  (1.0000)
+	[11] Doc 36  (1.0000)
+Modelo Vectorial:
+	[1] Doc 4  (0.3651)
+	[2] Doc 9  (0.3651)
+	[3] Doc 21  (0.2887)
+	[4] Doc 38  (0.2887)
+	[5] Doc 37  (0.2801)
+	[6] Doc 19  (0.2408)
+	[7] Doc 1  (0.2182)
+	[8] Doc 6  (0.1741)
+	[9] Doc 14  (0.1741)
+	[10] Doc 29  (0.1667)
+	[11] Doc 36  (0.1325)
+
+Query 3
+Modelo Booleano AND:
+No hay resultados
+Modelo Booleano OR:
+	[1] Doc 14  (1.0000)
+	[2] Doc 19  (1.0000)
+	[3] Doc 32  (1.0000)
+	[4] Doc 22  (1.0000)
+	[5] Doc 8  (1.0000)
+	[6] Doc 13  (1.0000)
+	[7] Doc 24  (1.0000)
+	[8] Doc 27  (1.0000)
+	[9] Doc 35  (1.0000)
+	[10] Doc 2  (1.0000)
+	[11] Doc 11  (1.0000)
+	[12] Doc 20  (1.0000)
+	[13] Doc 33  (1.0000)
+	[14] Doc 34  (1.0000)
+Modelo Vectorial:
+	[1] Doc 22  (0.2020)
+	[2] Doc 34  (0.1890)
+	[3] Doc 27  (0.1429)
+	[4] Doc 35  (0.1260)
+	[5] Doc 14  (0.1140)
+	[6] Doc 11  (0.1140)
+	[7] Doc 8  (0.1048)
+	[8] Doc 20  (0.1048)
+	[9] Doc 32  (0.1010)
+	[10] Doc 33  (0.0976)
+	[11] Doc 24  (0.0945)
+	[12] Doc 13  (0.0917)
+	[13] Doc 19  (0.0788)
+	[14] Doc 2  (0.0788)
+
+Query 4
+Modelo Booleano AND:
+No hay resultados
+Modelo Booleano OR:
+	[1] Doc 7  (1.0000)
+	[2] Doc 13  (1.0000)
+	[3] Doc 27  (1.0000)
+	[4] Doc 30  (1.0000)
+	[5] Doc 35  (1.0000)
+Modelo Vectorial:
+	[1] Doc 27  (0.2182)
+	[2] Doc 35  (0.1925)
+	[3] Doc 7  (0.1491)
+	[4] Doc 30  (0.1491)
+	[5] Doc 13  (0.1400)
+
+Query 5
+Modelo Booleano AND:
+No hay resultados
+Modelo Booleano OR:
+	[1] Doc 10  (1.0000)
+	[2] Doc 18  (1.0000)
+	[3] Doc 32  (1.0000)
+	[4] Doc 8  (1.0000)
+Modelo Vectorial:
+	[1] Doc 18  (0.2887)
+	[2] Doc 8  (0.1601)
+	[3] Doc 10  (0.1543)
+	[4] Doc 32  (0.1543)
+
+Query 6
+Modelo Booleano AND:
+No hay resultados
+Modelo Booleano OR:
+	[1] Doc 36  (1.0000)
+	[2] Doc 5  (1.0000)
+	[3] Doc 17  (1.0000)
+	[4] Doc 9  (1.0000)
+	[5] Doc 15  (1.0000)
+	[6] Doc 25  (1.0000)
+	[7] Doc 29  (1.0000)
+	[8] Doc 32  (1.0000)
+Modelo Vectorial:
+	[1] Doc 5  (0.2052)
+	[2] Doc 25  (0.1491)
+	[3] Doc 9  (0.1414)
+	[4] Doc 29  (0.1291)
+	[5] Doc 32  (0.1195)
+	[6] Doc 15  (0.1085)
+	[7] Doc 36  (0.1026)
+	[8] Doc 17  (0.0953)
+
